@@ -9,3 +9,7 @@ app.get('/', function(req, res){
 app.listen(PORT, function(){
   console.log(`listening on port ${PORT}`);
 });
+
+
+//CRUD
+//CREATE, READ, UPDATE, DELETE
