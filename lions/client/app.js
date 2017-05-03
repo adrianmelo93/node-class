@@ -38,6 +38,23 @@ var lionTemplate = '<h3><%= name %>' +
   };
 };
 
+var makeLionList = function(){
+  lions.forEach(function(lion){
+    makeTemplate(lion);
+  });
+}
+
+var getAllLions = function(){
+  fetch('/lions')
+    then(function(resp){
+    return resp.json();
+  })
+  .then(function(data){
+    lions = lions.concat(data);
+    makeLionList();
+  });
+};
+
 (function(){
   var form = document.querySelector('form');
 
@@ -68,43 +85,3 @@ var lionTemplate = '<h3><%= name %>' +
   })
 
 })();
-
-
-
-
-
-
-
-
-
-
-
-
-
-// $('#submit').click(function() {
-//     $.ajax({
-//         url: "http://localhost:3000/lions",
-//         method: 'POST',
-//         success: function() {
-//             console.log("yous data is been post")
-//         },
-//         data: {
-//             name: $('#a').val(),
-//             pride: $('#b').val()
-//         }
-//
-//     });
-// });
-//
-// $('#submit').click(function(){
-// $.ajax({
-// url: "http://localhost:3000/lions",
-// method: 'GET',
-// success: function(gt){
-// $('#content').html("")
-// gt.forEach(function(list){
-// $('#content').append(`<tr><td>${list.name}</td>, <td>${list.pride}</td></tr>`)
-// });
-// },
-// });
-// });

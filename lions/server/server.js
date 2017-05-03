@@ -2,35 +2,47 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
 var _ = require('lodash');
+var morgan = require('morgan');
 
+var lions = [];
+var id = 0;
+
+var updateId = function(req, res, next){
+  if(!req.body.id){
+    id++;
+    req.body.id = id + '';
+  }
+  next();
+};
+
+app.use(morgan('dev'));
 app.use(express.static('client'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-// {
-//   id
-//   name,
-//   pride,
-//   age,
-//   gender
-// }
+app.param('id', function(req, res, next, id){
+  var lion = _.find(lions, {id: id});
 
-var lions = [];
-var id = 0;
+  if(lion) {
+    req.lion = lion;
+    next();
+  }else {
+    res.send;
+  }
+});
 
 app.get('/lions', function(req, res){
   res.json(lions);
 });
 
 app.get('/lions/:id', function(req, res){
-  var lion = _.find(lions, {id: req.params.id});
+  var lion = req.lion;
   res.json(lion || {});
 });
 
-app.post('/lions', function(req, res){
+app.post('/lions', updateId, function(req, res){
     var lion = req.body;
-    id++;
-    lion.id = id + '';
+
     lions.push(lion);
     res.json(lion);
 });
@@ -47,9 +59,10 @@ if(!lions[lion]){
 }else{
   var updateLion = _assign(lions[lion], update);
   res.json(updateLion);
-}
-
+  }
 });
+
+
 app.delete('/lions/:id', function(req, res){
   var lion = _.findIndex(lions, {id: req.params.id});
   if(!lions[lion]){
@@ -58,6 +71,12 @@ app.delete('/lions/:id', function(req, res){
     var deletedLion = lion[lion];
     lions.splice(lion, 1);
     res.json(deletedLion);
+  }
+});
+
+app.use(function(err, req, res, next){
+  if(err){
+    res.status(500).send(error);
   }
 });
 
