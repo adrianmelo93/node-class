@@ -46,7 +46,7 @@ var makeLionList = function(){
 
 var getAllLions = function(){
   fetch('/lions')
-    then(function(resp){
+    .then(function(resp){
     return resp.json();
   })
   .then(function(data){
